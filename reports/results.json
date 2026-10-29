@@ -1,0 +1,254 @@
+{
+  "config": {
+    "val_days": 90,
+    "test_days": 90,
+    "horizon_days": 7,
+    "features": [
+      "lag7",
+      "lag14",
+      "roll7",
+      "t",
+      "is_holiday",
+      "month_sin",
+      "month_cos",
+      "dow_0",
+      "dow_1",
+      "dow_2",
+      "dow_3",
+      "dow_4",
+      "dow_5",
+      "dow_6"
+    ],
+    "selection_metric": "validation WAPE"
+  },
+  "series": {
+    "total": {
+      "chosen_model": "ridge_a10",
+      "validation_wape": {
+        "seasonal_naive": 0.11984656400103491,
+        "ridge_a1": 0.10982579286480211,
+        "ridge_a10": 0.1095283191748918,
+        "random_forest": 0.1373337655718814,
+        "gradient_boosting": 0.1262486719252737
+      },
+      "test": {
+        "chosen": {
+          "MAE": 1272.0814627972745,
+          "RMSE": 1834.3444780840457,
+          "WAPE": 0.24684580596366698
+        },
+        "baseline": {
+          "MAE": 1450.4555555555555,
+          "RMSE": 2045.931477618718,
+          "WAPE": 0.2814590740425312
+        }
+      },
+      "recursive_28d_test": {
+        "chosen": {
+          "horizon_days": 28,
+          "n_points": 140,
+          "MAE": 1107.9037676261319,
+          "RMSE": 1631.3187889895385,
+          "WAPE": 0.2055629915613495
+        },
+        "baseline": {
+          "horizon_days": 28,
+          "n_points": 140,
+          "MAE": 1716.0071428571428,
+          "RMSE": 2323.693726745047,
+          "WAPE": 0.31839187854932444
+        }
+      },
+      "worst_test_days": [
+        {
+          "date": "2012-10-29",
+          "actual": 22.0,
+          "predicted": 6373.676504167451,
+          "abs_error": 6351.676504167451
+        },
+        {
+          "date": "2012-10-30",
+          "actual": 1096.0,
+          "predicted": 6626.102132791396,
+          "abs_error": 5530.102132791396
+        },
+        {
+          "date": "2012-12-26",
+          "actual": 441.0,
+          "predicted": 5407.660214711576,
+          "abs_error": 4966.660214711576
+        },
+        {
+          "date": "2012-12-24",
+          "actual": 920.0,
+          "predicted": 5306.714041359809,
+          "abs_error": 4386.714041359809
+        },
+        {
+          "date": "2012-12-25",
+          "actual": 1013.0,
+          "predicted": 5184.396302255913,
+          "abs_error": 4171.396302255913
+        }
+      ],
+      "split_dates": {
+        "train_end": "2012-07-04",
+        "val_end": "2012-10-02",
+        "test_start": "2012-10-03",
+        "test_end": "2012-12-31"
+      }
+    },
+    "casual": {
+      "chosen_model": "ridge_a1",
+      "validation_wape": {
+        "seasonal_naive": 0.25807832400520114,
+        "ridge_a1": 0.1885299261181113,
+        "ridge_a10": 0.18857797263427573,
+        "random_forest": 0.23630785651911299,
+        "gradient_boosting": 0.24778735901830265
+      },
+      "test": {
+        "chosen": {
+          "MAE": 323.7645894637014,
+          "RMSE": 443.16287126897447,
+          "WAPE": 0.4303218396747073
+        },
+        "baseline": {
+          "MAE": 376.9,
+          "RMSE": 522.8522098388161,
+          "WAPE": 0.5009451516673066
+        }
+      },
+      "recursive_28d_test": {
+        "chosen": {
+          "horizon_days": 28,
+          "n_points": 140,
+          "MAE": 346.0269245843028,
+          "RMSE": 454.58776493377934,
+          "WAPE": 0.44287397213331253
+        },
+        "baseline": {
+          "horizon_days": 28,
+          "n_points": 140,
+          "MAE": 473.5642857142857,
+          "RMSE": 643.8100596116395,
+          "WAPE": 0.6061068702290077
+        }
+      },
+      "worst_test_days": [
+        {
+          "date": "2012-11-25",
+          "actual": 309.0,
+          "predicted": 1412.1078057556763,
+          "abs_error": 1103.1078057556763
+        },
+        {
+          "date": "2012-11-11",
+          "actual": 2290.0,
+          "predicted": 1220.5129053930204,
+          "abs_error": 1069.4870946069796
+        },
+        {
+          "date": "2012-10-06",
+          "actual": 3031.0,
+          "predicted": 1975.2495352009837,
+          "abs_error": 1055.7504647990163
+        },
+        {
+          "date": "2012-10-07",
+          "actual": 781.0,
+          "predicted": 1793.4227092055476,
+          "abs_error": 1012.4227092055476
+        },
+        {
+          "date": "2012-11-24",
+          "actual": 532.0,
+          "predicted": 1534.2629492585202,
+          "abs_error": 1002.2629492585202
+        }
+      ],
+      "split_dates": {
+        "train_end": "2012-07-04",
+        "val_end": "2012-10-02",
+        "test_start": "2012-10-03",
+        "test_end": "2012-12-31"
+      }
+    },
+    "registered": {
+      "chosen_model": "ridge_a10",
+      "validation_wape": {
+        "seasonal_naive": 0.11943385627733419,
+        "ridge_a1": 0.11699111330005309,
+        "ridge_a10": 0.11647169301292622,
+        "random_forest": 0.13946523987312473,
+        "gradient_boosting": 0.1388301188350741
+      },
+      "test": {
+        "chosen": {
+          "MAE": 1015.9903325998741,
+          "RMSE": 1551.4336425797912,
+          "WAPE": 0.23085617537053393
+        },
+        "baseline": {
+          "MAE": 1217.0444444444445,
+          "RMSE": 1818.8171919623417,
+          "WAPE": 0.2765402550449775
+        }
+      },
+      "recursive_28d_test": {
+        "chosen": {
+          "horizon_days": 28,
+          "n_points": 140,
+          "MAE": 843.6016685715151,
+          "RMSE": 1349.2097425723414,
+          "WAPE": 0.18306192820387518
+        },
+        "baseline": {
+          "horizon_days": 28,
+          "n_points": 140,
+          "MAE": 1446.7428571428572,
+          "RMSE": 2029.2550568408806,
+          "WAPE": 0.3139438278876558
+        }
+      },
+      "worst_test_days": [
+        {
+          "date": "2012-10-29",
+          "actual": 20.0,
+          "predicted": 5480.198743111019,
+          "abs_error": 5460.198743111019
+        },
+        {
+          "date": "2012-10-30",
+          "actual": 1009.0,
+          "predicted": 5819.261105457355,
+          "abs_error": 4810.261105457355
+        },
+        {
+          "date": "2012-12-26",
+          "actual": 432.0,
+          "predicted": 5095.585482178831,
+          "abs_error": 4663.585482178831
+        },
+        {
+          "date": "2012-12-24",
+          "actual": 746.0,
+          "predicted": 4953.175957905533,
+          "abs_error": 4207.175957905533
+        },
+        {
+          "date": "2012-12-25",
+          "actual": 573.0,
+          "predicted": 4270.260203682702,
+          "abs_error": 3697.260203682702
+        }
+      ],
+      "split_dates": {
+        "train_end": "2012-07-04",
+        "val_end": "2012-10-02",
+        "test_start": "2012-10-03",
+        "test_end": "2012-12-31"
+      }
+    }
+  }
+}
