@@ -34,6 +34,16 @@ python scripts/make_notebook.py  # opcional, requer requirements-dev.txt
 ```
 Os modelos treinados estão versionados (27 KB cada) para o app rodar logo após clonar; retreinar sobrescreve.
 
+## Design
+Metáfora: caderno de laboratório (papel quadriculado, figuras numeradas, notas de margem; `assets/style.css`, `ui.py`; fontes Newsreader + DM Mono). Decisões aplicadas: o carmim é usado só para previsões; uma "régua de erro" posiciona o WAPE de teste de cada modelo contra o baseline; o quadro de premissas (modelo, horizonte, erro em 28 dias, sem clima, valores do seu what-if) fica ao lado do gráfico; rótulos diretos e uma nota do dia mais baixo no lugar da legenda.
+
+| Desktop 1440 px | Celular 390 px |
+|---|---|
+| ![desktop](docs/screenshots/desktop-1440-top.jpg) | ![celular](docs/screenshots/mobile-390-top.jpg) |
+| ![detalhe](docs/screenshots/desktop-1440-detail.jpg) | ![detalhe celular](docs/screenshots/mobile-390-detail.jpg) |
+
+As capturas foram feitas no Chrome com o app incorporado em exatamente 1440 e 390 px de largura (a janela do navegador não pôde ser reduzida). No celular a tabela de modelos rola na horizontal dentro do próprio quadro. Foco de teclado e leitores de tela não foram testados com tecnologia assistiva.
+
 ## Método (o que dizer em entrevista)
 - **Alvo:** aluguéis diários, 3 séries (total, registrados, casuais). 731 dias.
 - **Sem vazamento:** toda feature de demanda usa dados de pelo menos 7 dias antes; um teste prova que mudar a demanda recente não altera as features do dia. Split cronológico: treino até 2012-07-04, validação até 2012-10-02, teste 2012-10-03..12-31 (90 dias cada).
@@ -44,7 +54,7 @@ Os modelos treinados estão versionados (27 KB cada) para o app rodar logo após
 ## Resultados medidos (teste, WAPE; menor é melhor)
 | modelo | total | registrados | casuais |
 |---|---|---|---|
-| seasonal-naive (baseline) | 0,282 | 0,276 | 0,501 |
+| seasonal-naive (baseline) | 0,281 | 0,277 | 0,501 |
 | ridge (alpha 1) | 0,248 | 0,230 | **0,430** |
 | ridge (alpha 10) | **0,247** | **0,231** | 0,430 |
 | random forest | 0,371 | 0,268 | 0,516 |

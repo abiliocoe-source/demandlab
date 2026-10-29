@@ -34,6 +34,16 @@ python scripts/make_notebook.py  # optional, needs requirements-dev.txt
 ```
 Trained models are committed (27 KB each) so the app runs right after cloning; retraining overwrites them.
 
+## Design
+Metaphor: a lab notebook (graph paper, numbered figures, margin notes; `assets/style.css`, `ui.py`; fonts Newsreader + DM Mono). Applied decisions: crimson is used only for forecasts; an "error ruler" places each model's test WAPE against the baseline; the premises box (model, horizon, 28-day error, no weather, your what-if values) stays beside the chart; direct labels and a lowest-day note instead of a legend.
+
+| Desktop 1440 px | Mobile 390 px |
+|---|---|
+| ![desktop](docs/screenshots/desktop-1440-top.jpg) | ![mobile](docs/screenshots/mobile-390-top.jpg) |
+| ![detail](docs/screenshots/desktop-1440-detail.jpg) | ![mobile detail](docs/screenshots/mobile-390-detail.jpg) |
+
+Screenshots were taken in Chrome with the app embedded at exactly 1440 and 390 px wide (the browser window itself could not be shrunk). On mobile the model table scrolls sideways inside its frame. Keyboard focus and screen readers were not tested with assistive technology.
+
 ## Method (what to say in an interview)
 - **Target:** daily rentals, 3 series (total, registered, casual). 731 days.
 - **No leakage:** every demand feature uses data from at least 7 days earlier; a test proves that changing recent demand does not change a day's features. Split is chronological: train to 2012-07-04, validation to 2012-10-02, test 2012-10-03..12-31 (90 days each for val/test).
@@ -44,7 +54,7 @@ Trained models are committed (27 KB each) so the app runs right after cloning; r
 ## Measured results (test set, WAPE; lower is better)
 | model | total | registered | casual |
 |---|---|---|---|
-| seasonal-naive (baseline) | 0.282 | 0.276 | 0.501 |
+| seasonal-naive (baseline) | 0.281 | 0.277 | 0.501 |
 | ridge (alpha 1) | 0.248 | 0.230 | **0.430** |
 | ridge (alpha 10) | **0.247** | **0.231** | 0.430 |
 | random forest | 0.371 | 0.268 | 0.516 |

@@ -21,8 +21,8 @@ Demand lagged by 7 and 14 days, mean of days t-13..t-7, day index, weekday, mont
 ## Measured results (test, WAPE; lower is better)
 | series | seasonal-naive | chosen model |
 |---|---|---|
-| total | 0.282 | 0.247 |
-| registered | 0.276 | 0.231 |
+| total | 0.281 | 0.247 |
+| registered | 0.277 | 0.231 |
 | casual | 0.501 | 0.430 |
 
 28-day recursive test WAPE (7 forecast origins x 28 days): total 0.206 vs baseline 0.318; registered 0.183 vs 0.314; casual 0.443 vs 0.606. Full tables: `reports/metrics.csv`, `reports/results.json`.
