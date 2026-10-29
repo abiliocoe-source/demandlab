@@ -70,5 +70,8 @@ Chosen on validation: `ridge_a10` (total, registered), `ridge_a1` (casual). Test
 ## Hugging Face Hub
 `MODEL_CARD.md` and `python scripts/export_hf.py` prepare `hf_repo/`. **Nothing is published.**
 
+## LLM
+This project uses no LLM: it is classical forecasting with scikit-learn, with no adapter and no API key involved.
+
 ## Next steps
 Weather as a known-in-advance input, prediction intervals, more history, rolling-origin cross-validation.

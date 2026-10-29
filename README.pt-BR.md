@@ -70,5 +70,8 @@ Escolhidos na validação: `ridge_a10` (total, registrados), `ridge_a1` (casuais
 ## Hugging Face Hub
 `MODEL_CARD.md` e `python scripts/export_hf.py` preparam `hf_repo/`. **Nada foi publicado.**
 
+## LLM
+Este projeto não usa LLM: é previsão clássica com scikit-learn, sem adaptador e sem chave de API.
+
 ## Próximos passos
 Clima como entrada conhecida com antecedência, intervalos de previsão, mais histórico, validação cruzada com origem móvel.
