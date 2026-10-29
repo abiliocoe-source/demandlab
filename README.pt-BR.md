@@ -35,14 +35,15 @@ python scripts/make_notebook.py  # opcional, requer requirements-dev.txt
 Os modelos treinados estão versionados (27 KB cada) para o app rodar logo após clonar; retreinar sobrescreve.
 
 ## Design
-Metáfora: caderno de laboratório (papel quadriculado, figuras numeradas, notas de margem; `assets/style.css`, `ui.py`; fontes Newsreader + DM Mono). Decisões aplicadas: o carmim é usado só para previsões; uma "régua de erro" posiciona o WAPE de teste de cada modelo contra o baseline; o quadro de premissas (modelo, horizonte, erro em 28 dias, sem clima, valores do seu what-if) fica ao lado do gráfico; rótulos diretos e uma nota do dia mais baixo no lugar da legenda.
+Direção de arte (estilo `achromatic-ledger` da taste-skill, aplicado dentro do Streamlit): um relatório de laboratório. O cromo não tem cor; o histórico é desenhado em tinta e a previsão tem o único matiz (carmim), tracejada e rotulada no fim. A tela responde primeiro uma pergunta (quantos aluguéis esperar e o quanto a previsão pode errar), com o achado escrito sob o título a partir da previsão e do erro de teste medido. A régua de erro é uma coluna da tabela de modelos: cada modelo é um ponto numa trilha de WAPE de 0 a 0,6 e um traço marca o baseline, então "melhor que repetir a semana passada" é visto, não lido. As premissas ficam dentro do cartão do gráfico. A tipografia é Geist, com Newsreader só no título e no achado.
 
-| Desktop 1440 px | Celular 390 px |
+| Antes | Depois |
 |---|---|
-| ![desktop](docs/screenshots/desktop-1440-top.jpg) | ![celular](docs/screenshots/mobile-390-top.jpg) |
-| ![detalhe](docs/screenshots/desktop-1440-detail.jpg) | ![detalhe celular](docs/screenshots/mobile-390-detail.jpg) |
+| ![antes](docs/screenshots/before/desktop-1440-top.jpg) | ![depois](docs/screenshots/after/desktop-1440-report.jpg) |
+| ![antes celular](docs/screenshots/before/mobile-390-top.jpg) | ![depois celular](docs/screenshots/after/mobile-390-report.jpg) |
 
-As capturas foram feitas no Chrome com o app incorporado em exatamente 1440 e 390 px de largura (a janela do navegador não pôde ser reduzida). No celular a tabela de modelos rola na horizontal dentro do próprio quadro. Foco de teclado e leitores de tela não foram testados com tecnologia assistiva.
+Mais: [régua de erro e simulador](docs/screenshots/after/desktop-1440-error-ruler.jpg), [régua de erro no celular](docs/screenshots/after/mobile-390-error-ruler.jpg). Não há imagens externas, então não há créditos.
+Conferido com o linter e o inspetor da skill (0 FAIL; o único aviso é a fonte de ícones do próprio Streamlit contada como terceira fonte no celular) e a olho no Chrome em 1440 e 390 px. O inspetor rodou numa cópia com esperas maiores para o Streamlit terminar de renderizar. No celular a tabela de modelos vira linhas de duas linhas e as premissas descem para depois do gráfico. Teclado e leitores de tela não foram testados com tecnologia assistiva. Defeitos conhecidos: no celular o rótulo final da previsão encosta na linha, e as linhas da régua parecem controles deslizantes (uma nota sob a tabela as explica).
 
 ## Método (o que dizer em entrevista)
 - **Alvo:** aluguéis diários, 3 séries (total, registrados, casuais). 731 dias.

@@ -35,14 +35,15 @@ python scripts/make_notebook.py  # optional, needs requirements-dev.txt
 Trained models are committed (27 KB each) so the app runs right after cloning; retraining overwrites them.
 
 ## Design
-Metaphor: a lab notebook (graph paper, numbered figures, margin notes; `assets/style.css`, `ui.py`; fonts Newsreader + DM Mono). Applied decisions: crimson is used only for forecasts; an "error ruler" places each model's test WAPE against the baseline; the premises box (model, horizon, 28-day error, no weather, your what-if values) stays beside the chart; direct labels and a lowest-day note instead of a legend.
+Art direction (taste-skill style `achromatic-ledger`, applied inside Streamlit): a laboratory report. The chrome has no colour; history is drawn in ink and the forecast owns the one hue (crimson), dashed and labelled at its end. The screen answers one question first (how many rentals to expect and how wrong the forecast can be), with the finding written under the title from the forecast and from the measured test error. The error ruler is a column of the model table: each model is a dot on a 0 to 0.6 WAPE track and a tick marks the baseline, so "better than repeating last week" is seen, not read. Premises sit inside the chart card. Type is Geist, with Newsreader only for the title and the finding.
 
-| Desktop 1440 px | Mobile 390 px |
+| Before | After |
 |---|---|
-| ![desktop](docs/screenshots/desktop-1440-top.jpg) | ![mobile](docs/screenshots/mobile-390-top.jpg) |
-| ![detail](docs/screenshots/desktop-1440-detail.jpg) | ![mobile detail](docs/screenshots/mobile-390-detail.jpg) |
+| ![before](docs/screenshots/before/desktop-1440-top.jpg) | ![after](docs/screenshots/after/desktop-1440-report.jpg) |
+| ![before mobile](docs/screenshots/before/mobile-390-top.jpg) | ![after mobile](docs/screenshots/after/mobile-390-report.jpg) |
 
-Screenshots were taken in Chrome with the app embedded at exactly 1440 and 390 px wide (the browser window itself could not be shrunk). On mobile the model table scrolls sideways inside its frame. Keyboard focus and screen readers were not tested with assistive technology.
+More: [error ruler and what-if](docs/screenshots/after/desktop-1440-error-ruler.jpg), [error ruler on a phone](docs/screenshots/after/mobile-390-error-ruler.jpg). No external images are used, so there is nothing to credit.
+Checked with the skill's linter and inspector (0 FAIL; the one warning is Streamlit's own icon font counted as a third typeface on phones) and by eye in Chrome at 1440 and 390 px. The inspector was run on a copy with longer wait times so Streamlit could finish rendering. On a phone the model table becomes two-line rows and the premises move below the chart. Keyboard use and screen readers were not tested with assistive technology. Known flaws: on a phone the end label of the forecast touches the line, and on a phone the ruler rows look like slider controls (a note under the table explains them).
 
 ## Method (what to say in an interview)
 - **Target:** daily rentals, 3 series (total, registered, casual). 731 days.
