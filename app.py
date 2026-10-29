@@ -24,7 +24,7 @@ except FileNotFoundError as exc:
 hist, fc = bundle["history"], forecast(bundle, horizon)
 fig = go.Figure()
 fig.add_scatter(x=hist.index[-history_days:], y=hist.iloc[-history_days:], name="History")
-fig.add_scatter(x=fc.index, y=fc, name="Forecast", line=dict(dash="dash"))
+fig.add_scatter(x=fc.index, y=fc, name="Forecast", line=dict(dash="dash", color="#F28E2B"))
 fig.update_layout(yaxis_title="rentals per day", legend_orientation="h", margin=dict(t=30))
 st.plotly_chart(fig, width="stretch")
 st.info(f"Model: **{bundle['model_name']}** (chosen by validation WAPE; fitted through "
