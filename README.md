@@ -8,7 +8,7 @@ Daily demand forecasting on real public data, with an honest answer to "how wron
 
 ![Forecast report: history, dashed forecast and the measured error](docs/screenshots/report.jpg)
 
-[Leia em português](README.pt-BR.md)
+**Live demo:** https://demandlab.streamlit.app/ · [Leia em português](README.pt-BR.md)
 
 ## Why
 

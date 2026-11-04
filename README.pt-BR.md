@@ -8,7 +8,7 @@ Previsão de demanda diária com dados públicos reais, uma resposta honesta par
 
 ![Relatório de previsão: histórico, previsão tracejada e o erro medido](docs/screenshots/report.jpg)
 
-A interface está em inglês. [Read in English](README.md).
+**Demo:** https://demandlab.streamlit.app/ · A interface está em inglês. [Read in English](README.md).
 
 ## Por quê
 
