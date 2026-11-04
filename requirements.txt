@@ -1,8 +1,9 @@
 streamlit>=1.40
 pandas>=2.2
 numpy>=1.26
-scikit-learn>=1.4
+# The models in models/ were saved with scikit-learn 1.9.1. Pickled estimators
+# are only guaranteed to load on the version that saved them, so keep this
+# pinned to the 1.9 line until the models are retrained.
+scikit-learn>=1.9,<1.10
 joblib>=1.3
 plotly>=5.20
-matplotlib>=3.8
-pytest>=8.0
