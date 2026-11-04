@@ -1,78 +1,96 @@
 # DemandLab
 
-Previsão de demanda com um **dataset público real** (aluguel diário de bicicletas, UCI Bike Sharing), pipeline reproduzível, avaliação honesta e app Streamlit de simulação. English: [README.md](README.md).
+Previsão de demanda diária com dados públicos reais, uma resposta honesta para "quanto isso pode errar?" e um pequeno app para testar capacidade contra a previsão.
 
-## Problema
-Times de operação precisam de uma previsão defensável das próximas semanas para planejar capacidade, e precisam saber o quanto ela pode errar.
+[![tests](https://github.com/abiliocoe-source/demandlab/actions/workflows/ci.yml/badge.svg)](https://github.com/abiliocoe-source/demandlab/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+[![Licença: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## Solução
-Ingestão e checagens -> análise de tendência/sazonalidade/anomalias -> features sem vazamento -> baseline + Ridge / RandomForest / GradientBoosting -> split temporal treino/validação/teste -> modelo escolhido pelo WAPE de validação -> modelo salvo -> módulo de inferência independente -> app Streamlit com simulação de capacidade e premissas visíveis.
+![Relatório de previsão: histórico, previsão tracejada e o erro medido](docs/screenshots/report.jpg)
 
-## Stack e justificativas
-pandas/NumPy (dados), scikit-learn (modelos clássicos bastam e são explicáveis), joblib (salvar modelos), Matplotlib/Jupyter (notebook), Streamlit + Plotly (app), pytest (testes). Sem deep learning.
+A interface está em inglês. [Read in English](README.md).
 
-## Arquitetura
-```mermaid
-flowchart LR
-  RAW[data/raw/day.csv UCI] --> D[data.py: leitura, checagens, split]
-  D --> F[features.py: lags >= 7 dias]
-  F --> T[train.py: baseline + 4 candidatos]
-  T -->|escolha pelo WAPE de validação| B[(models/*.joblib)]
-  T --> R[reports/metrics.csv + results.json]
-  B --> P[predict.py: previsão recursiva]
-  P --> A[app.py Streamlit]
-  R --> N[notebook]
-```
+## Por quê
 
-## Execução
-```bash
-pip install -r requirements.txt
-python -m demandlab.train        # ~40 s: treina e grava models/ e reports/
-streamlit run app.py
-python -m pytest -q
-python scripts/make_notebook.py  # opcional, requer requirements-dev.txt
-```
-Os modelos treinados estão versionados (27 KB cada) para o app rodar logo após clonar; retreinar sobrescreve.
+Quem planeja equipe, estoque ou frota trabalha com um palpite sobre a demanda da semana que vem. Uma previsão ajuda, mas um número solto, sem erro associado, convida ao excesso de confiança. A versão útil diz o que esperar, quanto ela já errou no passado e se ganha da regra mais simples possível.
 
-## Design
-Direção de arte (estilo `achromatic-ledger` da taste-skill, aplicado dentro do Streamlit): um relatório de laboratório. O cromo não tem cor; o histórico é desenhado em tinta e a previsão tem o único matiz (carmim), tracejada e rotulada no fim. A tela responde primeiro uma pergunta (quantos aluguéis esperar e o quanto a previsão pode errar), com o achado escrito sob o título a partir da previsão e do erro de teste medido. A régua de erro é uma coluna da tabela de modelos: cada modelo é um ponto numa trilha de WAPE de 0 a 0,6 e um traço marca o baseline, então "melhor que repetir a semana passada" é visto, não lido. As premissas ficam dentro do cartão do gráfico. A tipografia é Geist, com Newsreader só no título e no achado.
+Os dados são o [UCI Bike Sharing dataset](https://archive.ics.uci.edu/dataset/275/bike+sharing+dataset): 731 dias de aluguéis da Capital Bikeshare em Washington D.C., em 2011 e 2012. É pequeno, público e bagunçado o bastante para ser interessante, com tendência de crescimento, estações bem marcadas e um furacão no período de teste.
 
-| Antes | Depois |
+## Resultados
+
+São modeladas três séries (total, usuários registrados e casuais). Em cada uma, um baseline sazonal ingênuo ("mesmo dia da semana passada") concorre com duas regressões Ridge, um random forest e um gradient boosting. O modelo é escolhido pelo erro na validação e depois medido uma única vez nos últimos 90 dias, que nenhum modelo viu durante a escolha.
+
+Erro no teste para o total de aluguéis, em WAPE (menor é melhor):
+
+| Modelo | WAPE |
 |---|---|
-| ![antes](docs/screenshots/before/desktop-1440-top.jpg) | ![depois](docs/screenshots/after/desktop-1440-report.jpg) |
-| ![antes celular](docs/screenshots/before/mobile-390-top.jpg) | ![depois celular](docs/screenshots/after/mobile-390-report.jpg) |
+| Mesmo dia da semana passada (baseline) | 0,281 |
+| **Ridge, alpha 10 (escolhido)** | **0,247** |
+| Ridge, alpha 1 | 0,248 |
+| Gradient boosting | 0,325 |
+| Random forest | 0,371 |
 
-Mais: [régua de erro e simulador](docs/screenshots/after/desktop-1440-error-ruler.jpg), [régua de erro no celular](docs/screenshots/after/mobile-390-error-ruler.jpg). Não há imagens externas, então não há créditos.
-Conferido com o linter e o inspetor da skill (0 FAIL; o único aviso é a fonte de ícones do próprio Streamlit contada como terceira fonte no celular) e a olho no Chrome em 1440 e 390 px. O inspetor rodou numa cópia com esperas maiores para o Streamlit terminar de renderizar. No celular a tabela de modelos vira linhas de duas linhas e as premissas descem para depois do gráfico. Teclado e leitores de tela não foram testados com tecnologia assistiva. Defeitos conhecidos: no celular o rótulo final da previsão encosta na linha, e as linhas da régua parecem controles deslizantes (uma nota sob a tabela as explica).
+Num horizonte de 28 dias a diferença aumenta: 0,206 para o Ridge contra 0,318 do baseline. O Ridge também venceu nas outras duas séries. Todos os números estão em [reports/metrics.csv](reports/metrics.csv) e [reports/results.json](reports/results.json).
 
-## Método (o que dizer em entrevista)
-- **Alvo:** aluguéis diários, 3 séries (total, registrados, casuais). 731 dias.
-- **Sem vazamento:** toda feature de demanda usa dados de pelo menos 7 dias antes; um teste prova que mudar a demanda recente não altera as features do dia. Split cronológico: treino até 2012-07-04, validação até 2012-10-02, teste 2012-10-03..12-31 (90 dias cada).
-- **Seleção:** só pelo WAPE de validação. Depois, refit em treino+validação e avaliação única no teste.
-- **Métricas:** MAE, RMSE, WAPE (= soma|erro| / soma|real|; NaN se o denominador for 0).
-- **Baseline:** mesmo dia da semana anterior.
+Duas coisas nessa tabela merecem comentário. O erro no teste é cerca do dobro do erro na validação (0,247 contra 0,110), porque o teste vai do outono ao inverno, quando a demanda cai, e os modelos aprenderam principalmente uma tendência de alta. E os dois modelos de árvore perderam para o baseline. Meu palpite é que eles não conseguem extrapolar uma tendência além dos valores vistos no treino, mas não testei isso.
 
-## Resultados medidos (teste, WAPE; menor é melhor)
-| modelo | total | registrados | casuais |
-|---|---|---|---|
-| seasonal-naive (baseline) | 0,281 | 0,277 | 0,501 |
-| ridge (alpha 1) | 0,248 | 0,230 | **0,430** |
-| ridge (alpha 10) | **0,247** | **0,231** | 0,430 |
-| random forest | 0,371 | 0,268 | 0,516 |
-| gradient boosting | 0,325 | 0,244 | 0,471 |
+## Como ele evita usar o futuro
 
-Escolhidos na validação: `ridge_a10` (total, registrados), `ridge_a1` (casuais). MAE de teste em `total`: 1.272 vs 1.450 (baseline). WAPE recursivo de 28 dias no teste (7 origens): total 0,206 vs 0,318 do baseline. Tudo em `reports/metrics.csv` e `reports/results.json`.
+Toda variável de demanda para o dia *t* usa dados do dia *t-7* ou anteriores: a demanda de 7 e 14 dias antes e a média dos dias *t-13* a *t-7*. O resto são variáveis de calendário (dia da semana, mês como seno e cosseno, feriado, um contador de dias). Um teste soma um valor enorme a todos os dias a partir de *t-6* e confere que as variáveis do dia *t* não mudam.
 
-## Casos de falha e limitações
-- O erro de teste é ~2x o de validação em `total` (0,247 vs 0,110): o teste cobre outono-inverno e há só dois anos. Modelos de árvore pioram vs Ridge, provavelmente pela tendência de alta (hipótese, não testada).
-- Piores dias: 2012-10-29 e 10-30 (22 e 1.096 reais vs ~6.400 previstos) e 2012-12-26. Uma tempestade é causa plausível, mas não verificada; o modelo não usa clima.
-- Uma cidade e 2 anos; veja `data/SOURCE.md` (fonte, exigência de citação, limitações). Previsões além de 7 dias são recursivas e menos precisas.
+A divisão é cronológica: treino até 4 de julho de 2012, validação nos 90 dias seguintes e teste nos 90 finais. Previsões com mais de sete dias são recursivas, reaproveitando as previsões anteriores, então o erro cresce com o horizonte.
 
-## Hugging Face Hub
-`MODEL_CARD.md` e `python scripts/export_hf.py` preparam `hf_repo/`. **Nada foi publicado.**
+## O app
 
-## LLM
-Este projeto não usa LLM: é previsão clássica com scikit-learn, sem adaptador e sem chave de API.
+O app em Streamlit prevê os dias seguintes ao fim do dataset (a partir de janeiro de 2013). Você escolhe a série, um horizonte de 7 a 28 dias e quanto histórico mostrar. Abaixo do título, uma frase traz a média diária esperada e o erro medido do modelo a 28 dias.
 
-## Próximos passos
-Clima como entrada conhecida com antecedência, intervalos de previsão, mais histórico, validação cruzada com origem móvel.
+Em seguida vem a tabela de modelos, em que o erro de teste de cada um aparece como um ponto numa régua de 0 a 0,6, com um traço marcando o baseline. Se o ponto fica à esquerda do traço, o modelo ganha de repetir a semana passada.
+
+O último cartão é um "e se": você define a capacidade diária e aumenta ou reduz a demanda em porcentagem, e ele mostra quantos dias passam do limite e quanta demanda fica sem atendimento. Essas premissas são suas, e o app deixa isso escrito.
+
+## Como rodar
+
+```bash
+git clone https://github.com/abiliocoe-source/demandlab.git
+cd demandlab
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+Os modelos treinados estão no repositório (cerca de 27 KB cada), então o app funciona logo depois de clonar. Eles foram salvos com o scikit-learn 1.9.1, por isso o `requirements.txt` fixa a versão 1.9.
+
+Para retreinar, rodar os testes ou refazer o notebook:
+
+```bash
+pip install -r requirements-dev.txt
+python -m demandlab.train        # cerca de 40 s; regrava models/ e reports/
+python -m pytest -q
+python scripts/make_notebook.py  # monta e executa notebooks/demandlab.ipynb
+```
+
+## Estrutura
+
+```
+demandlab/
+  data.py      lê day.csv, procura dias faltando e valores negativos, divide no tempo
+  analysis.py  tendência, perfis por dia da semana e mês, detecção de anomalias
+  features.py  variáveis de defasagem e de calendário
+  models.py    o baseline e os quatro candidatos
+  train.py     escolha na validação, medição no teste, salva modelos e relatórios
+  predict.py   carrega um modelo salvo e prevê N dias à frente
+  metrics.py   MAE, RMSE, WAPE
+app.py, ui.py  app em Streamlit
+```
+
+## Limitações
+
+O modelo não usa clima. Os piores dias do teste são 29 e 30 de outubro de 2012, com 22 e 1.096 aluguéis contra cerca de 6.400 previstos. Foi quando o furacão Sandy atingiu a costa leste dos EUA, o que é uma explicação plausível, mas não conferi com as colunas de clima. Dois anos de uma única cidade também é pouco histórico: o modelo viu cada estação só duas vezes.
+
+Próximos passos: clima como variável conhecida com antecedência, intervalos de previsão em vez de uma linha só e validação cruzada com origem móvel.
+
+Mais detalhes no [model card](MODEL_CARD.md) e nas [notas sobre a fonte dos dados](data/SOURCE.md), que incluem a citação pedida pelos autores do dataset. As notas de interface estão em [docs/DESIGN.md](docs/DESIGN.md), e o [DEMO.md](DEMO.md) tem um roteiro de dois minutos.
+
+## Licença
+
+Código sob a [licença MIT](LICENSE). O dataset pertence aos seus autores; veja [data/SOURCE.md](data/SOURCE.md).

@@ -1,4 +1,4 @@
-"""DemandLab - demand forecast report. Run: streamlit run app.py (needs `python -m demandlab.train` first)."""
+"""DemandLab forecast report. Run: streamlit run app.py (loads the trained models from models/)."""
 from pathlib import Path
 
 import pandas as pd
