@@ -5,6 +5,5 @@ __pycache__/
 .ipynb_checkpoints/
 .env
 *.log
-hf_repo/models/
-hf_repo/reports/
-.taste-skill/
+hf_repo/
+.streamlit/secrets.toml

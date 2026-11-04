@@ -7,7 +7,7 @@ datasets: [uci-bike-sharing]
 ---
 # DemandLab daily demand forecaster
 
-**Status: NOT published to the Hugging Face Hub.** `hf_repo/` is only the prepared folder structure.
+**Status: not published to the Hugging Face Hub.** `python scripts/export_hf.py` builds a local `hf_repo/` folder (git-ignored) that could be uploaded later.
 
 ## What it is
 Three small scikit-learn models (series `total`, `registered`, `casual`) forecasting daily bike rentals up to 28 days ahead. Chosen per series by validation WAPE among: seasonal-naive baseline, Ridge (alpha 1, 10), RandomForest, GradientBoosting. Selected: Ridge in all three series (`ridge_a10` for total/registered, `ridge_a1` for casual).
